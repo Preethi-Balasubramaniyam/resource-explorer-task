@@ -1,13 +1,28 @@
 import { useFavorites } from '@/hooks/useFavorites';
 import Link from 'next/link';
+import Image from 'next/image';
 
-export default function CharacterCard({ character }: { character: any }) {
+interface Character {
+  id: number;
+  name: string;
+  image: string;
+  status: string;
+  species: string;
+}
+
+export default function CharacterCard({ character }: { character: Character }) {
   const { favorites, toggleFavorite } = useFavorites();
   const isFav = favorites.includes(character.id);
 
   return (
     <div className="border rounded p-4 shadow">
-      <img src={character.image} alt={character.name} className="rounded" />
+      <Image
+        src={character.image}
+        alt={character.name}
+        className="rounded"
+        width={300}
+        height={300}
+      />
       <h2 className="text-lg font-bold">{character.name}</h2>
       <p>{character.status} - {character.species}</p>
       <div className="flex items-center justify-between mt-2">
