@@ -5,7 +5,6 @@ import Loader from '@/components/Loader';
 import ErrorState from '@/components/ErrorState';
 import { useFavorites } from '@/hooks/useFavorites';
 import Image from 'next/image';
-
 export default function CharacterDetail() {
   const router = useRouter();
   const { id } = router.query;
@@ -38,10 +37,7 @@ export default function CharacterDetail() {
           <Image
             src={data.image}
             alt={data.name}
-            className="rounded-full mb-4"
-            width={128}
-            height={128}
-            style={{ objectFit: 'cover', border: '4px solid #e5e7eb' }}
+            className="rounded-full mb-4 w-32 h-32 object-cover border-4 border-gray-200 transition-transform duration-300 hover:scale-110 hover:border-blue-400"
           />
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-400 bg-clip-text text-transparent">{data.name}</h1>
           <p className="text-gray-600 mb-4">{data.status} - {data.species}</p>

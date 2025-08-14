@@ -1,14 +1,7 @@
+import { Character } from '@/types/character';
 import { useFavorites } from '@/hooks/useFavorites';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface Character {
-  id: number;
-  name: string;
-  image: string;
-  status: string;
-  species: string;
-}
 
 export default function CharacterCard({ character }: { character: Character }) {
   const { favorites, toggleFavorite } = useFavorites();
@@ -16,13 +9,7 @@ export default function CharacterCard({ character }: { character: Character }) {
 
   return (
     <div className="border rounded p-4 shadow">
-      <Image
-        src={character.image}
-        alt={character.name}
-        className="rounded"
-        width={300}
-        height={300}
-      />
+      <Image src={character.image} alt={character.name} width={300} height={300} className="rounded" />
       <h2 className="text-lg font-bold">{character.name}</h2>
       <p>{character.status} - {character.species}</p>
       <div className="flex items-center justify-between mt-2">

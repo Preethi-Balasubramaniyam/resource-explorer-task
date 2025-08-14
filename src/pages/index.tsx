@@ -6,27 +6,36 @@ import SearchBar from '@/components/SearchBar';
 import CharacterCard from '@/components/CharacterCard';
 import Pagination from '@/components/Pagination';
 import { useState } from 'react';
+import { Character } from '@/types/character';
+
+interface CharactersResponse {
+  results: Character[];
+  info: {
+    pages: number;
+  };
+}
 
 export default function HomePage() {
   const router = useRouter();
-  const page = typeof router.query.page === 'string' ? router.query.page : Array.isArray(router.query.page) ? router.query.page[0] : '1';
+  const page =
+    typeof router.query.page === 'string'
+      ? router.query.page
+      : Array.isArray(router.query.page)
+      ? router.query.page[0]
+      : '1';
 
   const [search, setSearch] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
   const [status, setStatus] = useState('');
-  const [species, setSpecies] = useState('');
-  const [type, setType] = useState('');
   const [sort, setSort] = useState('name-asc');
 
-  const { data, isLoading, isError, refetch, error } = useQuery<any>({
-    queryKey: ['characters', page, activeSearch, status, species, type],
+  const { data, isLoading, isError, refetch, error } = useQuery<CharactersResponse>({
+    queryKey: ['characters', page, activeSearch, status],
     queryFn: async ({ signal }) => {
       return await fetchCharacters({
         page,
         name: activeSearch,
         status,
-        species,
-        type,
         signal,
       });
     },
@@ -41,9 +50,8 @@ export default function HomePage() {
     router.push({ query: { ...router.query, page: newPage } });
   };
 
-  let results: any[] = [];
-  const isObject = (val: unknown): val is Record<string, any> => typeof val === 'object' && val !== null;
-  if (isObject(data) && 'results' in data && Array.isArray(data.results)) {
+  let results: Character[] = [];
+  if (data?.results) {
     results = [...data.results];
     if (sort === 'name-asc') {
       results.sort((a, b) => a.name.localeCompare(b.name));
@@ -51,7 +59,8 @@ export default function HomePage() {
       results.sort((a, b) => b.name.localeCompare(a.name));
     }
   }
-  const totalPages = (isObject(data) && 'info' in data && typeof data.info?.pages === 'number') ? data.info.pages : 1;
+
+  const totalPages = data?.info?.pages ?? 1;
 
   return (
     <div className="container mx-auto p-4">
@@ -67,7 +76,9 @@ export default function HomePage() {
         <Loader />
       ) : isError ? (
         <div className="col-span-full flex flex-col items-center py-8">
-          <div className="text-red-500 mb-2">Error: {error?.message || 'Failed to load data.'}</div>
+          <div className="text-red-500 mb-2">
+            Error: {error instanceof Error ? error.message : 'Failed to load data.'}
+          </div>
           <button
             onClick={() => refetch()}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -77,14 +88,12 @@ export default function HomePage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          {results.map((c: any) => <CharacterCard key={c.id} character={c} />)}
+          {results.map((c) => (
+            <CharacterCard key={c.id} character={c} />
+          ))}
         </div>
       )}
-      <Pagination
-        page={Number(page)}
-        totalPages={totalPages}
-        onChange={handlePageChange}
-      />
+      <Pagination page={Number(page)} totalPages={totalPages} onChange={handlePageChange} />
     </div>
   );
 }
