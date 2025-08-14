@@ -40,7 +40,7 @@ export default function CharacterDetail() {
             className="rounded-full mb-4 w-32 h-32 object-cover border-4 border-gray-200 transition-transform duration-300 hover:scale-110 hover:border-blue-400"
           />
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-400 bg-clip-text text-transparent">{data.name}</h1>
-          <p className="text-gray-600 mb-4">{data.status} - {data.species}</p>
+          <p className="text-gray-600 mb-4">{data?.status} - {data?.species}</p>
           <button
             onClick={() => toggleFavorite(data.id)}
             className="flex items-center gap-2 mt-2 px-4 py-2 rounded-full border transition-colors duration-200"
