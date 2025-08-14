@@ -19,8 +19,8 @@ export default function CharacterDetail() {
   if (isLoading) return <Loader />;
   if (isError) return <ErrorState onRetry={refetch} />;
 
-  const isFav = favorites.includes(data.id);
-
+const isFav = data ? favorites.includes(data.id) : false;
+  if (!data) return null;
   return (
     <div className="container mx-auto flex justify-center items-center min-h-screen">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
